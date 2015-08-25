@@ -1,27 +1,19 @@
-FROM debian:jessie
-MAINTAINER Shane Starcher <shanestarcher@gmail.com>
+# FROM phusion/baseimage
+FROM ruby
+MAINTAINER Christian Sakshaug <christian@csadevio.net>
+# Based on good work at https://github.com/sstarcher/docker-sensu
 
-RUN apt-get update && apt-get install -y wget ca-certificates && apt-get -y clean
+RUN apt-get update
+RUN apt-get install -y wget ca-certificates
 RUN wget -q http://repos.sensuapp.org/apt/pubkey.gpg -O- | apt-key add -
 RUN echo "deb     http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list
 
-RUN \
-	apt-get update && \
-    apt-get install -y sensu && \
-    apt-get -y clean
+#ENV PATH /opt/sensu/embedded/bin:$PATH
+ENV PATH /opt/sensu/bin:$PATH
 
-
-ENV PATH /opt/sensu/embedded/bin:$PATH
-
-#Nokogiri is needed by aws plugins
-RUN \
-	apt-get update && \
-    apt-get install -y libxml2 libxml2-dev libxslt1-dev zlib1g-dev build-essential  && \
-    gem install nokogiri && \
-    apt-get remove -y libxml2-dev libxslt1-dev zlib1g-dev && \
-    apt-get autoremove -y && \
-    apt-get -y clean
-
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y sensu
 
 RUN wget https://github.com/jwilder/dockerize/releases/download/v0.0.2/dockerize-linux-amd64-v0.0.2.tar.gz
 RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.0.2.tar.gz
@@ -31,19 +23,24 @@ ENV DEFAULT_PLUGINS_REPO sensu-plugins
 ADD templates /etc/sensu/templates
 ADD bin /bin/
 
-#Plugins needed for handlers
+# Plugins needed for handlers
 RUN /bin/install slack mailer pagerduty
 
-#Plugins needed for checks and maybe handlers
-RUN /bin/install aws consul docker sstarcher/dns etcd ftp graphite http redis elasticsearch
+# Plugins needed for checks and maybe handlers
+RUN /bin/install aws consul docker dns etcd ftp graphite http redis elasticsearch
+
+# Clean up
+RUN apt-get autoremove -y
+RUN apt-get -y clean
+RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 4567
 VOLUME ["/etc/sensu/conf.d"]
 
-#Client Config
+# Client Config
 ENV CLIENT_SUBSCRIPTIONS all,default
 
-#Common Config
+# Common Config
 ENV RUNTIME_INSTALL ''
 ENV LOG_LEVEL warn
 ENV EMBEDDED_RUBY true
