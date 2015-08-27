@@ -1,3 +1,4 @@
+{{ $RABBITMQ_PORT := default .Env.RABBITMQ_PORT "5672" }}
 {
   "client": {
     "name": "{{ .Env.CLIENT_NAME }}",
