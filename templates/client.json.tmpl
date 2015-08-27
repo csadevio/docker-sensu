@@ -9,6 +9,13 @@
     ],
     "keepalive": {
       "handler": "{{ default .Env.CLIENT_KEEPALIVE_HANDLER "default"  }}"
+    },
+    "rabbitmq": {
+      "host": "{{ default .Env.RABBITMQ_HOST "rabbitmq" }}",
+      "port": {{ default .Env.RABBITMQ_PORT_5672_TCP_PORT $RABBITMQ_PORT }},
+      "vhost": "{{ default .Env.RABBITMQ_VHOST "/" }}"
+      "user": "{{ default .Env.RABBITMQ_USER "guest" }}",
+      "password": "{{ default .Env.RABBITMQ_PASSWORD "guest" }}"
     }
   }
 }
