@@ -13,7 +13,7 @@
     "rabbitmq": {
       "host": "{{ default .Env.RABBITMQ_HOST "rabbitmq" }}",
       "port": {{ default .Env.RABBITMQ_PORT "5672" }},
-      "vhost": "{{ default .Env.RABBITMQ_VHOST "/" }}"
+      "vhost": "{{ default .Env.RABBITMQ_VHOST "/" }}",
       "user": "{{ default .Env.RABBITMQ_USER "guest" }}",
       "password": "{{ default .Env.RABBITMQ_PASSWORD "guest" }}"
     }
