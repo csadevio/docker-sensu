@@ -22,6 +22,7 @@ ENV DEFAULT_PLUGINS_REPO sensu-plugins
 
 ADD templates /etc/sensu/templates
 ADD bin /bin/
+ADD generators /etc/sensu/generators
 
 # Plugins needed for handlers
 RUN /bin/install slack mailer pagerduty

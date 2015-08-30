@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "check_url_{{ .Env.CHECK_NAME }}": {
+      "command": "/usr/local/bundle/bin/check-http.rb {{ default .Env.CHECK_OPTION "-r"  }} --url {{ .Env.CHECK_URL }}",
+      "subscribers": [
+        "{{ default .Env.CHECK_SUBSCRIBERS "roundrobin:websites" }}"
+      ],
+      "interval": 60,
+      "timeout": 10,
+      "handlers": ["default", "debug"]
+    }
+  }
+}

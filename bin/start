@@ -17,6 +17,13 @@ case "$SENSU_SERVICE" in
     ;;&
   api|server|client)
     shopt -s nullglob #fixes null glob when no file exists
+
+    for generator in /etc/sensu/generators/*.sh
+    do
+	echo "Execute $generator"
+	/bin/bash $generator
+    done
+
     for file in $CONFIG_DIR/*.tmpl
     do
       echo "Processing $file file..."
